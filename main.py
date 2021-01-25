@@ -4,7 +4,7 @@ import time
 import telegram
 import os
 
-logging.basicConfig(filename="sample.log", level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
 
 DEVMAN_TOKEN = os.environ["DEVMAN_API_TOKEN"]
 TG_TOKEN = os.environ["TG_TOKEN"]
