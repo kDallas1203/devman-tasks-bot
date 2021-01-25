@@ -5,12 +5,17 @@ import telegram
 import os
 from bot import get_bot_instanse
 from tg_logs_handler import TgLogsHandler
+from dotenv import load_dotenv
+load_dotenv()
 
 logger = logging.getLogger("Telegram Bot Logger")
 logger.setLevel(logging.INFO)
 
-if os.environ["TG_LOGGER_BOT_TOKEN"] is not None:
+try:
+    os.environ["TG_LOGGER_BOT_TOKEN"]
     logger.addHandler(TgLogsHandler())
+except KeyError:
+    pass
 
 DEVMAN_TOKEN = os.environ["DEVMAN_API_TOKEN"]
 BASE_URL = 'https://dvmn.org'
