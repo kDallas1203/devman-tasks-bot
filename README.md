@@ -13,6 +13,8 @@ pip install -r requirements.txt
 
 `DEVMAN_API_TOKEN` = токен для доступа к api devman
 
+`TG_LOGGER_BOT_TOKEN` = токен бота для получения логов
+
 Запустите бота коммандой
 ```
 python3 main.py

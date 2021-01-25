@@ -8,7 +8,9 @@ from tg_logs_handler import TgLogsHandler
 
 logger = logging.getLogger("Telegram Bot Logger")
 logger.setLevel(logging.INFO)
-logger.addHandler(TgLogsHandler())
+
+if os.environ["TG_LOGGER_BOT_TOKEN"] is not None:
+    logger.addHandler(TgLogsHandler())
 
 DEVMAN_TOKEN = os.environ["DEVMAN_API_TOKEN"]
 BASE_URL = 'https://dvmn.org'
