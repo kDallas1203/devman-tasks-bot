@@ -3,13 +3,16 @@ import logging
 import time
 import telegram
 import os
+from bot import get_bot_instanse
+from tg_logs_handler import TgLogsHandler
 
-logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("Telegram Bot Logger")
+logger.setLevel(logging.INFO)
+logger.addHandler(TgLogsHandler())
 
 DEVMAN_TOKEN = os.environ["DEVMAN_API_TOKEN"]
-TG_TOKEN = os.environ["TG_TOKEN"]
 BASE_URL = 'https://dvmn.org'
-BOT = telegram.Bot(token=TG_TOKEN)
+BOT = get_bot_instanse()
 
 
 def get_review_message(attempt):
@@ -32,7 +35,6 @@ def start_long_polling(url):
     headers = {"Authorization": "Token {}".format(DEVMAN_TOKEN)}
     timeout = None
     while True:
-        logging.info("Start long_polling")
         params = {}
 
         if timeout:
@@ -45,7 +47,7 @@ def start_long_polling(url):
             status = review['status']
 
             if status == 'found':
-                logging.info('New review {}'.format(review))
+                logger.info('New review {}'.format(review))
                 for attempt in review['new_attempts']:
                     message = get_review_message(attempt)
                     BOT.send_message(
@@ -53,21 +55,27 @@ def start_long_polling(url):
                 timeout = review['last_attempt_timestamp']
 
             if status == 'timeout':
-                logging.debug('long_polling timeout')
+                logger.debug('long_polling timeout')
                 timeout = review['timestamp_to_request']
         except requests.exceptions.ReadTimeout:
             time.sleep(5)
-        except ConnectionError:
-            logging.error('Connection error. Attempt to connect...')
+        except ConnectionError as error:
+            logger.error('Бот упал с ошибкой:')
+            logging.error(error)
             time.sleep(5)
+        except Exception as error:
+            logger.error('Бот упал с ошибкой:')
+            logger.error(error)
 
 
 def main():
     long_polling_url = BASE_URL + '/api/long_polling/'
     try:
+        logger.info("Бот запущен")
         start_long_polling(long_polling_url)
     except requests.exceptions.HTTPError as error:
-        logging.error("Can't get data from server: %s" % error)
+        logger.error('Бот упал с ошибкой:')
+        logger.error(error)
 
 
 if __name__ == '__main__':
