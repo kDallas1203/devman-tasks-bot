@@ -6,8 +6,8 @@ import os
 
 logging.basicConfig(filename="sample.log", level=logging.INFO)
 
-DEVMAN_TOKEN = os.getenv("DEVMAN_API_TOKEN")
-TG_TOKEN = os.getenv("TG_TOKEN")
+DEVMAN_TOKEN = os.environ["DEVMAN_API_TOKEN"]
+TG_TOKEN = os.environ["TG_TOKEN"]
 BASE_URL = 'https://dvmn.org'
 BOT = telegram.Bot(token=TG_TOKEN)
 
@@ -49,7 +49,7 @@ def start_long_polling(url):
                 for attempt in review['new_attempts']:
                     message = get_review_message(attempt)
                     BOT.send_message(
-                        chat_id=os.getenv("TG_CHAT_ID"), text=message)
+                        chat_id=os.environ["TG_CHAT_ID"], text=message)
                 timeout = review['last_attempt_timestamp']
 
             if status == 'timeout':
