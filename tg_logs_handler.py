@@ -12,7 +12,7 @@ class TgLogsHandler(logging.Handler):
         log_entry = self.format(record)
         try:
             self.bot.send_message(chat_id=os.environ["TG_CHAT_ID"], text=log_entry)
-        except Exception as error:
-            print('Logger bot send message error:', error)
+        except telegram.error.TelegramError as error:
+            print('Logger bot error:', error)
     
 
